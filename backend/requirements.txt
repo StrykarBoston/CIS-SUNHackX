@@ -4,4 +4,5 @@ groq==0.4.2
 anthropic==0.21.3
 python-dotenv==1.0.1
 pydantic==2.6.4
-resend==2.1.0
+httpx==0.25.1
+resend>=2.1.0

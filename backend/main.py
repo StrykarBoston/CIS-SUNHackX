@@ -9,7 +9,10 @@ from typing import Dict, Any
 
 from agents import run_pipeline
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'), override=False)
+# Load .env for local dev; on Render, env vars are set in the dashboard
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(env_path):
+    load_dotenv(dotenv_path=env_path, override=False)
 
 app = FastAPI(title="Conflict Intelligence System API")
 
