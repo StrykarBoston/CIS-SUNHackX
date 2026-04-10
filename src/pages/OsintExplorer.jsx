@@ -8,7 +8,7 @@ export default function OsintExplorer({ agentOutputs, setActivePage }) {
   if (!a1?.findings) {
     return (
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-lg font-bold text-[#f9fafb] mb-6">OSINT EXPLORER</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-[#f9fafb] mb-6">OSINT EXPLORER</h2>
         <EmptyState
           icon="🔍"
           title="No OSINT Data Available"
@@ -39,9 +39,9 @@ export default function OsintExplorer({ agentOutputs, setActivePage }) {
     <div className="max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h2 className="text-lg font-bold text-[#f9fafb]">OSINT EXPLORER</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-[#f9fafb]">OSINT EXPLORER</h2>
           <p className="text-xs text-[#6b7280] mt-1">
-            Region: <span className="text-[#9ca3af] font-medium">{a1.region}</span> · 
+            Region: <span className="text-gray-600 dark:text-[#9ca3af] font-medium">{a1.region}</span> · 
             {a1.total_findings} findings · 
             {a1.alert_flag && <span className="text-[#ef4444] ml-1">⚠ ALERT FLAG</span>}
           </p>
@@ -50,8 +50,8 @@ export default function OsintExplorer({ agentOutputs, setActivePage }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search findings..."
-          className="w-full sm:w-72 px-4 py-2 rounded-lg bg-[#0a0f1e] border border-[#1f2937] text-sm
-            text-[#f9fafb] placeholder-[#4b5563] focus:outline-none focus:border-[#3b82f6]"
+          className="w-full sm:w-72 px-4 py-2 rounded-lg bg-gray-50 dark:bg-[#0a0f1e] border border-gray-200 dark:border-[#1f2937] text-sm
+            text-gray-900 dark:text-[#f9fafb] placeholder-[#4b5563] focus:outline-none focus:border-[#3b82f6]"
         />
       </div>
 
@@ -65,8 +65,8 @@ export default function OsintExplorer({ agentOutputs, setActivePage }) {
                 style={{ background: categoryColors[f.category] || '#6b7280' }}
               />
             </div>
-            <h4 className="text-sm font-bold text-[#f9fafb] mb-2 leading-snug">{f.headline}</h4>
-            <p className="text-xs text-[#9ca3af] leading-relaxed mb-3">{f.summary}</p>
+            <h4 className="text-sm font-bold text-gray-900 dark:text-[#f9fafb] mb-2 leading-snug">{f.headline}</h4>
+            <p className="text-xs text-gray-600 dark:text-[#9ca3af] leading-relaxed mb-3">{f.summary}</p>
             <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#6b7280]">
               <span>📰 {f.source}</span>
               <span>📍 {f.location}</span>

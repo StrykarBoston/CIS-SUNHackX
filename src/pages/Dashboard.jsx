@@ -26,7 +26,7 @@ function AgentProgressRow({ agent, index }) {
       ${agent.status === 'running' ? 'bg-[#1f293740] border-[#3b82f640] animate-pulse-glow' :
         agent.status === 'complete' ? 'bg-[#10b98108] border-[#10b98130]' :
         agent.status === 'error' ? 'bg-[#ef444408] border-[#ef444430]' :
-        'bg-transparent border-[#1f293730]'}`}
+        'bg-transparent border-gray-200 dark:border-[#1f293730]'}`}
     >
       <span className={`text-lg ${agent.status === 'running' ? 'animate-spin-slow' : ''}`}>
         {icons[agent.status] || '⏳'}
@@ -37,7 +37,7 @@ function AgentProgressRow({ agent, index }) {
             className="w-2 h-2 rounded-full shrink-0"
             style={{ background: agentColors[index] }}
           />
-          <span className="text-sm font-semibold text-[#f9fafb]">
+          <span className="text-sm font-semibold text-gray-900 dark:text-[#f9fafb]">
             Agent {agent.id} — {agent.name}
           </span>
         </div>
@@ -91,7 +91,7 @@ export default function Dashboard({
     <div className="max-w-7xl mx-auto space-y-6">
       {/* ---- Generate Brief Card ---- */}
       <div className="intel-card border-l-4 border-l-[#ef4444]">
-        <h2 className="text-lg font-bold text-[#f9fafb] mb-1">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-[#f9fafb] mb-1">
           GENERATE INTELLIGENCE BRIEF
         </h2>
         <p className="text-sm text-[#6b7280] mb-4">
@@ -101,7 +101,7 @@ export default function Dashboard({
         {/* Data Sources Banner */}
         <div className="flex flex-wrap gap-2 mb-4">
           {['News APIs', 'Social Media', 'RSS/Feeds', 'Wikipedia', 'Web Search'].map(src => (
-            <span key={src} className="badge bg-[#1f2937] text-[#6b7280] border border-[#374151] text-[10px]">
+            <span key={src} className="badge bg-gray-100 dark:bg-[#1f2937] text-[#6b7280] border border-gray-300 dark:border-[#374151] text-[10px]">
               {src}
             </span>
           ))}
@@ -113,7 +113,7 @@ export default function Dashboard({
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && generateBrief()}
             placeholder="Enter region or conflict topic... (e.g. South China Sea, Ukraine-Russia border)"
-            className="flex-1 px-4 py-3 rounded-lg bg-[#0a0f1e] border border-[#1f2937] text-[#f9fafb]
+            className="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-[#0a0f1e] border border-gray-200 dark:border-[#1f2937] text-gray-900 dark:text-[#f9fafb]
               placeholder-[#4b5563] text-sm focus:outline-none focus:border-[#ef4444] focus:ring-1
               focus:ring-[#ef444440] transition-all"
             disabled={isLoading}
@@ -130,7 +130,7 @@ export default function Dashboard({
             {isLoading ? 'GENERATING...' : 'GENERATE BRIEF ▶'}
           </button>
         </div>
-        <p className="text-[11px] text-[#4b5563] mt-3">
+        <p className="text-[11px] text-gray-400 dark:text-[#4b5563] mt-3">
           Target: under 5 minutes · 5 agents · CrewAI orchestrator · Fully traceable
         </p>
       </div>
@@ -148,20 +148,20 @@ export default function Dashboard({
       {isLoading && (
         <div className="intel-card animate-fade-in space-y-2">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold text-[#9ca3af] uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider">
               CrewAI Agent Pipeline
             </h3>
-            <span className="text-[10px] text-[#4b5563] font-mono">Ollama (local LLM)</span>
+            <span className="text-[10px] text-gray-400 dark:text-[#4b5563] font-mono">Ollama (local LLM)</span>
           </div>
           {agentStatuses.map((agent, i) => (
             <AgentProgressRow key={agent.id} agent={agent} index={i} />
           ))}
-          <div className="flex items-center justify-center gap-2 pt-3 border-t border-[#1f2937] mt-3">
+          <div className="flex items-center justify-center gap-2 pt-3 border-t border-gray-200 dark:border-[#1f2937] mt-3">
             <span className="text-yellow-400">⚡</span>
-            <span className="text-sm font-mono text-[#9ca3af] tabular-nums">
+            <span className="text-sm font-mono text-gray-600 dark:text-[#9ca3af] tabular-nums">
               {formatTime(elapsedSeconds)} elapsed
             </span>
-            <span className="text-xs text-[#4b5563]">· Target: {'<'}5 min</span>
+            <span className="text-xs text-gray-400 dark:text-[#4b5563]">· Target: {'<'}5 min</span>
           </div>
         </div>
       )}
@@ -173,7 +173,7 @@ export default function Dashboard({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Threat Gauge */}
             <div className="intel-card animate-fade-in-up flex flex-col items-center justify-center py-8">
-              <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-6">
+              <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-6">
                 Threat Assessment
               </h3>
               <ThreatGauge score={brief.threat_score || a2?.threat_score || 5} />
@@ -190,19 +190,19 @@ export default function Dashboard({
             {/* Executive Summary */}
             <div className="intel-card animate-fade-in-up delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">
+                <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider">
                   Executive Summary
                 </h3>
                 <span className="classification-banner text-[10px] px-3 py-1 rounded">
                   {brief.classification || 'UNCLASSIFIED // FOR OFFICIAL USE ONLY'}
                 </span>
               </div>
-              <p className="text-sm text-[#d1d5db] leading-relaxed mb-4">
+              <p className="text-sm text-gray-800 dark:text-[#d1d5db] leading-relaxed mb-4">
                 {brief.executive_summary}
               </p>
               <div className="flex items-center gap-4 text-[11px] text-[#6b7280]">
-                <span>Brief ID: <span className="text-[#9ca3af] font-mono">{brief.brief_id}</span></span>
-                <span>Generated: <span className="text-[#9ca3af] font-mono">
+                <span>Brief ID: <span className="text-gray-600 dark:text-[#9ca3af] font-mono">{brief.brief_id}</span></span>
+                <span>Generated: <span className="text-gray-600 dark:text-[#9ca3af] font-mono">
                   {new Date(brief.generated_at || currentBrief.generatedAt).toLocaleString()}
                 </span></span>
               </div>
@@ -213,25 +213,25 @@ export default function Dashboard({
           {/* ROW 2 — Priority Recommendations */}
           {brief.top_3_recommendations && (
             <div className="intel-card animate-fade-in-up delay-300" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-              <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-1">
+              <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-1">
                 Source-Traced Recommendations
               </h3>
-              <p className="text-[10px] text-[#4b5563] mb-4">Every recommendation traces back to its source agent</p>
+              <p className="text-[10px] text-gray-400 dark:text-[#4b5563] mb-4">Every recommendation traces back to its source agent</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {brief.top_3_recommendations.map((rec, i) => (
-                  <div key={i} className="bg-[#0a0f1e] rounded-xl p-4 border border-[#1f2937] hover:border-[#374151] transition-colors">
+                  <div key={i} className="bg-gray-50 dark:bg-[#0a0f1e] rounded-xl p-4 border border-gray-200 dark:border-[#1f2937] hover:border-gray-300 dark:border-[#374151] transition-colors">
                     <div className="flex items-start gap-3 mb-3">
                       <span className="text-2xl font-black text-[#ef4444]">{rec.rank || i + 1}</span>
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-[#f9fafb] leading-snug">{rec.action}</p>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-[#f9fafb] leading-snug">{rec.action}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-[#9ca3af] mb-3 leading-relaxed">{rec.rationale}</p>
+                    <p className="text-xs text-gray-600 dark:text-[#9ca3af] mb-3 leading-relaxed">{rec.rationale}</p>
                     <div className="flex flex-wrap gap-2 mb-2">
                       <PriorityBadge level={rec.urgency} />
                       <PriorityBadge level={rec.risk} />
                     </div>
-                    <p className="text-[10px] text-[#4b5563] mt-2">📎 Source: {rec.source}</p>
+                    <p className="text-[10px] text-gray-400 dark:text-[#4b5563] mt-2">📎 Source: {rec.source}</p>
                   </div>
                 ))}
               </div>
@@ -241,13 +241,13 @@ export default function Dashboard({
           {/* ROW 3 — Key Findings Table */}
           {brief.key_findings && (
             <div className="intel-card animate-fade-in-up delay-400" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-              <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4">
                 Key Intelligence Findings
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#1f2937] text-[#6b7280] text-xs uppercase tracking-wider">
+                    <tr className="border-b border-gray-200 dark:border-[#1f2937] text-[#6b7280] text-xs uppercase tracking-wider">
                       <th className="text-left py-3 px-3">#</th>
                       <th className="text-left py-3 px-3">Finding</th>
                       <th className="text-left py-3 px-3">Source Agent</th>
@@ -257,9 +257,9 @@ export default function Dashboard({
                   </thead>
                   <tbody>
                     {brief.key_findings.map((f, i) => (
-                      <tr key={i} className={`border-b border-[#1f293750] ${i % 2 === 0 ? 'bg-[#111827]' : 'bg-[#0d1220]'}`}>
+                      <tr key={i} className={`border-b border-gray-200 dark:border-[#1f293750] ${i % 2 === 0 ? 'bg-white dark:bg-[#111827]' : 'bg-gray-50 dark:bg-[#0d1220]'}`}>
                         <td className="py-3 px-3 text-[#6b7280] font-mono text-xs">{i + 1}</td>
-                        <td className="py-3 px-3 text-[#d1d5db] text-xs leading-relaxed max-w-md">{f.finding}</td>
+                        <td className="py-3 px-3 text-gray-800 dark:text-[#d1d5db] text-xs leading-relaxed max-w-md">{f.finding}</td>
                         <td className="py-3 px-3">
                           <span className="text-xs text-[#3b82f6] font-medium">{f.source_agent}</span>
                         </td>
@@ -281,7 +281,7 @@ export default function Dashboard({
           {/* ROW 4 — Scenarios */}
           {a3?.scenarios && (
             <div className="animate-fade-in-up delay-500" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-              <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4">
                 Strategic Scenarios & Projected Outcomes
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -298,11 +298,11 @@ export default function Dashboard({
                     )}
                     <div className={sc.id === a3.recommended_scenario_id ? 'mt-5' : ''}>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg font-black text-[#4b5563]">#{sc.id}</span>
+                        <span className="text-lg font-black text-gray-400 dark:text-[#4b5563]">#{sc.id}</span>
                         <PriorityBadge level={sc.type} />
                       </div>
-                      <h4 className="text-sm font-bold text-[#f9fafb] mb-2">{sc.title}</h4>
-                      <p className="text-xs text-[#9ca3af] mb-4 leading-relaxed line-clamp-3">{sc.description}</p>
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-[#f9fafb] mb-2">{sc.title}</h4>
+                      <p className="text-xs text-gray-600 dark:text-[#9ca3af] mb-4 leading-relaxed line-clamp-3">{sc.description}</p>
                       <div className="space-y-2 text-xs">
                         <div>
                           <span className="text-[#6b7280]">Success Probability</span>
@@ -310,7 +310,7 @@ export default function Dashboard({
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#6b7280]">Timeline</span>
-                          <span className="text-[#9ca3af] font-mono">{sc.timeline_days} days</span>
+                          <span className="text-gray-600 dark:text-[#9ca3af] font-mono">{sc.timeline_days} days</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#6b7280]">Risk</span>
@@ -319,7 +319,7 @@ export default function Dashboard({
                       </div>
                       {/* Inline civilian impact from this scenario */}
                       {sc.civilian_impact && (
-                        <div className="mt-3 pt-3 border-t border-[#1f293750] space-y-1 text-[11px]">
+                        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-[#1f293750] space-y-1 text-[11px]">
                           <p className="text-[#6b7280] uppercase tracking-wide font-bold mb-1">Civilian Impact</p>
                           <div className="flex justify-between">
                             <span className="text-[#6b7280]">IDPs</span>
@@ -346,7 +346,7 @@ export default function Dashboard({
           {/* ROW 5 — Civilian Impact Overview (from Agent 3's overall_civilian_impact) */}
           {civilianImpact && (
             <div className="animate-fade-in-up delay-600" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-              <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4">
                 Civilian Impact Assessment
               </h3>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -388,7 +388,7 @@ export default function Dashboard({
                 onClick={() => setSourcesOpen(!sourcesOpen)}
                 className="flex items-center justify-between w-full"
               >
-                <h3 className="text-xs font-bold text-[#9ca3af] uppercase tracking-wider">
+                <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider">
                   Intelligence Sources Cited ({a1.findings.length})
                 </h3>
                 <span className={`text-[#6b7280] transition-transform ${sourcesOpen ? 'rotate-180' : ''}`}>
@@ -398,14 +398,14 @@ export default function Dashboard({
               {sourcesOpen && (
                 <div className="mt-4 space-y-2 animate-fade-in">
                   {a1.findings.map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-xs py-2 border-b border-[#1f293740]">
-                      <span className="text-[#4b5563] font-mono w-6">{i + 1}</span>
-                      <span className="text-[#9ca3af] font-medium">{f.source}</span>
-                      <span className="badge bg-[#1f2937] text-[#6b7280] border border-[#374151] text-[9px]">{f.source_type || 'OSINT'}</span>
+                    <div key={i} className="flex items-center gap-3 text-xs py-2 border-b border-gray-200 dark:border-[#1f293740]">
+                      <span className="text-gray-400 dark:text-[#4b5563] font-mono w-6">{i + 1}</span>
+                      <span className="text-gray-600 dark:text-[#9ca3af] font-medium">{f.source}</span>
+                      <span className="badge bg-gray-100 dark:bg-[#1f2937] text-[#6b7280] border border-gray-300 dark:border-[#374151] text-[9px]">{f.source_type || 'OSINT'}</span>
                       <a href={f.source_url} target="_blank" rel="noopener" className="text-[#3b82f6] hover:underline truncate flex-1">
                         {f.source_url}
                       </a>
-                      <span className="text-[#4b5563] font-mono">{f.date}</span>
+                      <span className="text-gray-400 dark:text-[#4b5563] font-mono">{f.date}</span>
                     </div>
                   ))}
                 </div>
@@ -438,7 +438,7 @@ function MetricTile({ icon, label, value, suffix = '', isAlert }) {
     <div className={`intel-card flex flex-col items-center text-center py-6 
       ${isAlert ? 'border-[#ef444440]' : ''}`}>
       <span className="text-2xl mb-2">{icon}</span>
-      <p className="text-3xl font-black mb-1" style={{ color: isAlert ? '#ef4444' : '#f9fafb' }}>
+      <p className={`text-3xl font-black mb-1 ${isAlert ? 'text-[#ef4444]' : 'text-gray-900 dark:text-[#f9fafb]'}`}>
         <AnimatedNumber value={value} suffix={suffix} />
       </p>
       <p className="text-xs text-[#6b7280] font-medium uppercase tracking-wide">{label}</p>

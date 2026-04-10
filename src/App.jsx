@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AGENT_PROMPTS, AGENT_ORDER } from './agentPrompts';
-import { callClaudeAgent } from './api';
+import { callAgent } from './api';
+import { gatherOSINT } from './osintTools';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -68,21 +69,38 @@ export default function App() {
         updateAgentStatus(agentNum, 'running');
         const agentStart = Date.now();
 
+        let osintData = null;
+        if (key === 'agent1') {
+          // Fetch real Wikipedia and Reddit data
+          osintData = await gatherOSINT(userInput);
+        }
+
         let result;
         let retried = false;
         try {
-          result = await callClaudeAgent(
+          result = await callAgent(
             agent.system,
-            agent.buildUserMessage(userInput, outputs)
+            key === 'agent1' ? agent.buildUserMessage(userInput, outputs, osintData) : agent.buildUserMessage(userInput, outputs)
           );
         } catch (err) {
-          // Retry once
+          // Retry once with a 15-second delay to handle Groq free-tier rate limits
           retried = true;
           updateAgentStatus(agentNum, 'retrying');
+
+          let delayMs = 15000;
+          // Extract specific wait time if provided by Groq
+          const match = err.message.match(/try again in ([\d\.]+)s/);
+          if (match && match[1]) {
+            delayMs = (parseFloat(match[1]) * 1000) + 1000; // adds 1s buffer
+          }
+
+          console.warn(`Agent ${agentNum} hit an error: ${err.message}. Retrying in ${delayMs / 1000}s...`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+
           try {
-            result = await callClaudeAgent(
+            result = await callAgent(
               agent.system,
-              agent.buildUserMessage(userInput, outputs)
+              key === 'agent1' ? agent.buildUserMessage(userInput, outputs, osintData) : agent.buildUserMessage(userInput, outputs)
             );
           } catch (retryErr) {
             updateAgentStatus(agentNum, 'error');

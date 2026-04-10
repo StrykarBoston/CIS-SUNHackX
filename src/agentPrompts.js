@@ -10,9 +10,11 @@ export const AGENT_PROMPTS = {
     role: 'Senior OSINT Intelligence Collector',
     description: 'Ingesting & filtering data from OSINT sources...',
     color: '#3b82f6', // Blue — matches diagram
-    system: `You are a senior OSINT Intelligence Collector. Your job is to simulate collecting open-source intelligence about conflict zones. Based on the region/topic provided, generate realistic-sounding intelligence findings as if you had just collected them from multiple OSINT data sources: News APIs, Social Media, RSS/Feeds, Wikipedia, and Web Search.
+    system: `You are a senior OSINT Intelligence Collector. You have queried public APIs (Wikipedia, Reddit, News) and retrieved real-world contextual data about the target region/conflict.
 
 You use LangChain tools and web_search capabilities to ingest and filter data from these sources.
+
+Your job is to read the provided real OSINT context and synthezise it into structured, realistic intelligence findings. If the OSINT data lacks specific tactical details, you should extrapolate reasonable intelligence findings based on the provided context to fulfill the required schema realistically.
 
 Return ONLY a JSON object with this exact structure:
 {
@@ -24,10 +26,10 @@ Return ONLY a JSON object with this exact structure:
     {
       "id": 1,
       "headline": "string",
-      "summary": "2-3 sentence summary",
-      "source": "News Agency name",
+      "summary": "2-3 sentence summary based on the real context",
+      "source": "News Agency/Reddit/Wikipedia",
       "source_type": "News API|Social Media|RSS Feed|Wikipedia|Web Search",
-      "source_url": "https://example.com/article",
+      "source_url": "URL if available, else placeholder",
       "date": "YYYY-MM-DD",
       "location": "specific location",
       "confidence": 0.85,
@@ -36,10 +38,10 @@ Return ONLY a JSON object with this exact structure:
     }
   ],
   "alert_flag": true,
-  "total_findings": 8
+  "total_findings": 5
 }
-Generate exactly 8 findings. Make them realistic and detailed.`,
-    buildUserMessage: (input) => `Collect OSINT for region: ${input}`,
+Generate exactly 5 findings based on the provided OSINT context. Make them detailed and grounded in the data.`,
+    buildUserMessage: (input, outputs, osintData) => `Target Region: ${input}\n\n=== REAL OSINT DATA FETCHED SO FAR ===\n${osintData || 'No additional OSINT data available.'}\n=====================================\n\nParse this data and generate the JSON findings.`,
   },
 
   agent2: {

@@ -30,7 +30,7 @@ export function ThreatGauge({ score = 0, size = 200 }) {
         <path
           d="M 20 100 A 80 80 0 0 1 180 100"
           fill="none"
-          stroke="#1f2937"
+          className="stroke-gray-200 dark:stroke-[#1f2937]"
           strokeWidth="12"
           strokeLinecap="round"
         />
@@ -158,7 +158,7 @@ export function ConfidenceBar({ value, color = '#3b82f6' }) {
           }}
         />
       </div>
-      <span className="text-xs font-mono text-[#9ca3af] w-10 text-right">{pct}%</span>
+      <span className="text-xs font-mono text-gray-600 dark:text-[#9ca3af] w-10 text-right">{pct}%</span>
     </div>
   );
 }
@@ -170,8 +170,8 @@ export function EmptyState({ icon = '📊', title, message, action, onAction }) 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       <span className="text-5xl mb-4">{icon}</span>
-      <h3 className="text-lg font-semibold text-[#f9fafb] mb-2">{title}</h3>
-      <p className="text-sm text-[#9ca3af] max-w-md mb-6">{message}</p>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-[#f9fafb] mb-2">{title}</h3>
+      <p className="text-sm text-gray-600 dark:text-[#9ca3af] max-w-md mb-6">{message}</p>
       {action && (
         <button
           onClick={onAction}
@@ -192,16 +192,16 @@ export function RawOutput({ data, label = 'Raw Agent Output' }) {
   const [open, setOpen] = useState(false);
   if (!data) return null;
   return (
-    <div className="mt-3 border-t border-[#1f2937] pt-3">
+    <div className="mt-3 border-t border-gray-200 dark:border-[#1f2937] pt-3">
       <button
         onClick={() => setOpen(!open)}
-        className="text-xs text-[#4b5563] hover:text-[#9ca3af] transition-colors flex items-center gap-1"
+        className="text-xs text-gray-400 dark:text-[#4b5563] hover:text-gray-600 dark:text-[#9ca3af] transition-colors flex items-center gap-1"
       >
         <span className={`transition-transform ${open ? 'rotate-90' : ''}`}>▶</span>
         {label}
       </button>
       {open && (
-        <pre className="mt-2 p-3 bg-[#0a0f1e] rounded-lg text-[10px] text-[#6b7280] overflow-x-auto max-h-60 overflow-y-auto">
+        <pre className="mt-2 p-3 bg-gray-50 dark:bg-[#0a0f1e] rounded-lg text-[10px] text-[#6b7280] overflow-x-auto max-h-60 overflow-y-auto">
           {JSON.stringify(data, null, 2)}
         </pre>
       )}

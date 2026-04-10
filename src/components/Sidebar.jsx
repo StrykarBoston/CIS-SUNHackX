@@ -30,11 +30,11 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
 
       {/* Sidebar */}
       <aside className={`no-print fixed lg:relative z-40 h-full w-[220px] shrink-0
-        bg-[#0d1220] border-r border-[#1f2937] flex flex-col py-4 px-3 gap-1
+        bg-white dark:bg-[#0d1220] border-r border-gray-200 dark:border-[#1f2937] flex flex-col py-4 px-3 gap-1
         transition-transform duration-300
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        <div className="text-[10px] text-[#4b5563] font-semibold uppercase tracking-[0.2em] px-4 mb-2">
+        <div className="text-[10px] text-gray-400 dark:text-[#4b5563] font-semibold uppercase tracking-[0.2em] px-4 mb-2">
           Navigation
         </div>
         {NAV_ITEMS.map(item => (
@@ -52,8 +52,8 @@ export default function Sidebar({ activePage, setActivePage, isOpen, setIsOpen }
         ))}
 
         {/* Bottom section */}
-        <div className="mt-auto pt-4 border-t border-[#1f2937] px-3">
-          <div className="text-[10px] text-[#4b5563] font-medium leading-relaxed">
+        <div className="mt-auto pt-4 border-t border-gray-200 dark:border-[#1f2937] px-3">
+          <div className="text-[10px] text-gray-400 dark:text-[#4b5563] font-medium leading-relaxed">
             <p>CONFLICT.AI v2.0</p>
             <p>5-Agent Pipeline</p>
             <p className="text-[#ef4444] mt-1">UNCLASSIFIED</p>
