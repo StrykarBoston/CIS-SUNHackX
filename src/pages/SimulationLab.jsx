@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PriorityBadge, ConfidenceBar, EmptyState } from '../components/UIComponents';
+import LiveOSINTMap from '../components/LiveOSINTMap';
 
 // Mini gauge for scenario probability
 function MiniGauge({ value, size = 120 }) {
@@ -24,6 +25,7 @@ function MiniGauge({ value, size = 120 }) {
 
 export default function SimulationLab({ agentOutputs, setActivePage }) {
   const a3 = agentOutputs.agent3;
+  const a1 = agentOutputs.agent1;
 
   if (!a3?.scenarios) {
     return (
@@ -49,6 +51,21 @@ export default function SimulationLab({ agentOutputs, setActivePage }) {
           Recommended: Scenario #{a3.recommended_scenario_id}
         </p>
       </div>
+
+      {/* Global Context Map injected for situational awareness in Simulation Lab */}
+      {a1?.findings && a1.findings.length > 0 && (
+        <div className="intel-card animate-fade-in-up mb-6 border-0 p-0 overflow-hidden bg-transparent shadow-none">
+          <div className="bg-white dark:bg-[#111827] px-6 py-4 border-b border-gray-200 dark:border-[#1f2937] rounded-t-xl flex justify-between items-center">
+            <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider flex items-center gap-2">
+              <span className="text-[#3b82f6]">🌍</span> OSINT Global Context Map
+            </h3>
+            <span className="text-[10px] text-[#6b7280] font-mono tracking-widest">{a1.findings.length} LIVE MARKERS</span>
+          </div>
+          <div className="h-[350px]">
+            <LiveOSINTMap findings={a1.findings} />
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {a3.scenarios.map((sc, i) => (

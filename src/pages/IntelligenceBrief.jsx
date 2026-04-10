@@ -87,6 +87,35 @@ export default function IntelligenceBrief({ currentBrief, agentOutputs, setActiv
             )}
           </div>
           <p className="text-sm text-gray-800 dark:text-[#d1d5db] leading-relaxed">{brief.executive_summary}</p>
+          
+          {/* Inject OSINT Daily Summary if available */}
+          {a1?.daily_summary && (
+            <div className="mt-4 p-3 bg-amber-50 dark:bg-[#f59e0b10] border-l-4 border-l-[#f59e0b] rounded-r-lg">
+              <h4 className="text-[10px] font-bold text-[#f59e0b] uppercase tracking-wider mb-1 flex items-center gap-1">
+                <span>📢</span> Real-Time OSINT Daily Update
+              </h4>
+              <p className="text-xs text-gray-900 dark:text-[#d1d5db] leading-relaxed font-semibold">
+                {a1.daily_summary}
+              </p>
+              {a1.alert_reason && (
+                <p className="text-[10px] text-gray-700 dark:text-[#9ca3af] mt-1">
+                  Trigger: {a1.alert_reason}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Inject Market & Economic Summary if available */}
+          {brief.market_and_industry_summary && (
+            <div className="mt-3 p-3 bg-gray-50 dark:bg-[#111827] border border-gray-200 dark:border-[#1f2937] rounded-lg">
+              <h4 className="text-[10px] font-bold text-[#3b82f6] uppercase tracking-wider mb-1 flex items-center gap-1">
+                <span>📈</span> Macro-Economic & Market Impact
+              </h4>
+              <p className="text-xs text-gray-700 dark:text-[#9ca3af] leading-relaxed">
+                {brief.market_and_industry_summary}
+              </p>
+            </div>
+          )}
         </Section>
 
         {/* 2. THREAT ASSESSMENT */}
@@ -205,7 +234,43 @@ export default function IntelligenceBrief({ currentBrief, agentOutputs, setActiv
               <Metric label="Response Window" value={`${civilianImpact.response_window_days || 0} days`} />
             </div>
             {brief.civilian_impact_summary && (
-              <p className="text-sm text-gray-800 dark:text-[#d1d5db] leading-relaxed">{brief.civilian_impact_summary}</p>
+              <p className="text-sm text-gray-800 dark:text-[#d1d5db] leading-relaxed mb-4">{brief.civilian_impact_summary}</p>
+            )}
+            
+            {/* Inject Most Disrupted Industries and Market Volatility */}
+            {(civilianImpact.most_disrupted_industries || civilianImpact.market_volatility_indicators) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#1f293750]">
+                {civilianImpact.most_disrupted_industries && (
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <span className="text-[#f59e0b]">🏭</span> Disrupted Industries
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {civilianImpact.most_disrupted_industries.map((ind, i) => (
+                        <span key={i} className="badge bg-[#1f2937] border border-[#374151] text-[#d1d5db] text-xs">
+                          {ind}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {civilianImpact.market_volatility_indicators && (
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <span className="text-[#ef4444]">📉</span> Market Indicators
+                    </h4>
+                    <ul className="space-y-1">
+                      {civilianImpact.market_volatility_indicators.map((indicator, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-gray-800 dark:text-[#d1d5db]">
+                          <span className="text-[#f59e0b] mt-0.5">•</span>
+                          <span>{indicator}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             )}
           </Section>
         )}

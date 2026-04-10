@@ -22,7 +22,7 @@ export default function HumanitarianImpact({ agentOutputs, setActivePage }) {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h2 className="text-lg font-bold text-gray-900 dark:text-[#f9fafb]">CIVILIAN IMPACT ASSESSMENT</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-[#f9fafb]">CIVILIAN & ECONOMIC IMPACT ASSESSMENT</h2>
         <p className="text-xs text-[#6b7280] mt-1">
           Modeled by Agent 3 — Scenario Simulator (UNHCR/IDMC methodologies)
         </p>
@@ -103,11 +103,11 @@ export default function HumanitarianImpact({ agentOutputs, setActivePage }) {
         </div>
       )}
 
-      {/* Urgent needs & affected regions */}
+      {/* Urgent needs, Regions, and Market Impact */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Urgent Needs */}
         {civilianImpact.urgent_needs && (
-          <div className="intel-card">
+          <div className="intel-card col-span-1">
             <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4">
               Urgent Needs
             </h3>
@@ -131,7 +131,7 @@ export default function HumanitarianImpact({ agentOutputs, setActivePage }) {
 
         {/* Most affected regions */}
         {civilianImpact.most_affected_regions && (
-          <div className="intel-card">
+          <div className="intel-card col-span-1">
             <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4">
               Most Affected Regions
             </h3>
@@ -140,6 +140,38 @@ export default function HumanitarianImpact({ agentOutputs, setActivePage }) {
                 <li key={i} className="flex items-center gap-2 text-sm text-gray-800 dark:text-[#d1d5db]">
                   <span className="text-[#ef4444]">📍</span>
                   {region}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {/* Market & Economic Impact */}
+        {civilianImpact.most_disrupted_industries && (
+          <div className="intel-card col-span-1">
+            <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4 flex items-center gap-2">
+              <span className="text-[#f59e0b]">🏭</span> Most Disrupted Industries
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {civilianImpact.most_disrupted_industries.map((ind, i) => (
+                <span key={i} className="badge bg-[#1f2937] border border-[#374151] text-[#d1d5db] text-xs">
+                  {ind}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {civilianImpact.market_volatility_indicators && (
+           <div className="intel-card col-span-1">
+            <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider mb-4 flex items-center gap-2">
+              <span className="text-[#ef4444]">📉</span> Market Volatility Indicators
+            </h3>
+            <ul className="space-y-2">
+              {civilianImpact.market_volatility_indicators.map((indicator, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-gray-800 dark:text-[#d1d5db]">
+                  <span className="text-[#f59e0b] mt-0.5">•</span>
+                  <span>{indicator}</span>
                 </li>
               ))}
             </ul>

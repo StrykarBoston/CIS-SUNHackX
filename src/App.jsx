@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { AGENT_PROMPTS, AGENT_ORDER } from './agentPrompts';
-import { callAgent } from './api';
-import { gatherOSINT } from './osintTools';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -61,74 +58,56 @@ export default function App() {
     const outputs = {};
 
     try {
-      for (let i = 0; i < AGENT_ORDER.length; i++) {
-        const key = AGENT_ORDER[i];
-        const agent = AGENT_PROMPTS[key];
-        const agentNum = i + 1;
-
-        updateAgentStatus(agentNum, 'running');
-        const agentStart = Date.now();
-
-        let osintData = null;
-        if (key === 'agent1') {
-          // Fetch real Wikipedia and Reddit data
-          osintData = await gatherOSINT(userInput);
-        }
-
-        let result;
-        let retried = false;
-        try {
-          result = await callAgent(
-            agent.system,
-            key === 'agent1' ? agent.buildUserMessage(userInput, outputs, osintData) : agent.buildUserMessage(userInput, outputs)
-          );
-        } catch (err) {
-          // Retry once with a 15-second delay to handle Groq free-tier rate limits
-          retried = true;
-          updateAgentStatus(agentNum, 'retrying');
-
-          let delayMs = 15000;
-          // Extract specific wait time if provided by Groq
-          const match = err.message.match(/try again in ([\d\.]+)s/);
-          if (match && match[1]) {
-            delayMs = (parseFloat(match[1]) * 1000) + 1000; // adds 1s buffer
-          }
-
-          console.warn(`Agent ${agentNum} hit an error: ${err.message}. Retrying in ${delayMs / 1000}s...`);
-          await new Promise(resolve => setTimeout(resolve, delayMs));
-
-          try {
-            result = await callAgent(
-              agent.system,
-              key === 'agent1' ? agent.buildUserMessage(userInput, outputs, osintData) : agent.buildUserMessage(userInput, outputs)
-            );
-          } catch (retryErr) {
-            updateAgentStatus(agentNum, 'error');
-            throw new Error(`Agent ${agentNum} (${agent.name}) failed after retry: ${retryErr.message}`);
-          }
-        }
-
-        const elapsed = Math.floor((Date.now() - agentStart) / 1000);
-        outputs[key] = result;
-        setAgentOutputs(prev => ({ ...prev, [key]: result }));
-        updateAgentStatus(agentNum, 'complete', elapsed);
-      }
-
-      const total = Math.floor((Date.now() - startTime) / 1000);
-      const fullBrief = {
-        ...outputs,
-        topic: userInput,
-        totalSeconds: total,
-        generatedAt: new Date().toISOString(),
+      const ws = new WebSocket('ws://localhost:8000/api/pipeline/stream');
+      
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ topic: userInput }));
       };
+      
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'progress') {
+          updateAgentStatus(data.agent_id, data.status, data.elapsed);
+          if (data.result) {
+            setAgentOutputs(prev => ({ ...prev, [`agent${data.agent_id}`]: data.result }));
+            outputs[`agent${data.agent_id}`] = data.result;
+          }
+        } 
+        else if (data.type === 'complete') {
+          const total = Math.floor((Date.now() - startTime) / 1000);
+          const fullBrief = {
+            ...outputs,
+            ...data.brief,
+            topic: userInput,
+            totalSeconds: total,
+            generatedAt: new Date().toISOString(),
+          };
 
-      setCurrentBrief(fullBrief);
-      setBriefHistory(prev => [fullBrief, ...prev.slice(0, 19)]);
-      setTotalSeconds(total);
+          setCurrentBrief(fullBrief);
+          setBriefHistory(prev => [fullBrief, ...prev.slice(0, 19)]);
+          setTotalSeconds(total);
+          clearInterval(timerRef.current);
+          setIsLoading(false);
+          ws.close();
+        }
+        else if (data.type === 'error') {
+          setError(data.message);
+          clearInterval(timerRef.current);
+          setIsLoading(false);
+          ws.close();
+        }
+      };
+      
+      ws.onerror = () => {
+        setError("WebSocket connection failed. Ensure backend is running on port 8000.");
+        clearInterval(timerRef.current);
+        setIsLoading(false);
+      };
+      
     } catch (err) {
       console.error('Agent pipeline error:', err);
       setError(err.message);
-    } finally {
       clearInterval(timerRef.current);
       setIsLoading(false);
     }

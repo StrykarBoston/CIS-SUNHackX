@@ -176,3 +176,27 @@
   body { background: white !important; color: black !important; }
   .no-print { display: none !important; }
 }
+
+/* Map tiles dark mode filter */
+.dark .map-tiles-dark {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* Leaflet Popup overrides */
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff;
+  color: #111827;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.dark .leaflet-popup-content-wrapper {
+  background-color: #111827;
+  color: #f9fafb;
+  border: 1px solid #1f2937;
+}
+.leaflet-popup-tip {
+  background-color: #ffffff;
+}
+.dark .leaflet-popup-tip {
+  background-color: #111827;
+}

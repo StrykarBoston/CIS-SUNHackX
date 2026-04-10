@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ThreatGauge, AnimatedNumber, PriorityBadge, ConfidenceBar, RawOutput } from '../components/UIComponents';
+import LiveOSINTMap from '../components/LiveOSINTMap';
 
 // ============================================================
 // Agent Progress Row
@@ -169,6 +170,39 @@ export default function Dashboard({
       {/* ---- Results Section (after generation completes) ---- */}
       {currentBrief && brief && (
         <div className="space-y-6">
+          {/* ROW 0 — Daily OSINT Alert */}
+          {a1?.alert_flag && a1?.daily_summary && (
+            <div className="intel-card border-l-4 border-l-[#f59e0b] bg-amber-50 dark:bg-[#f59e0b10] animate-fade-in-up mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📢</span>
+                <h3 className="text-xs font-bold text-[#f59e0b] uppercase tracking-wider">
+                  Real-Time Daily Update
+                </h3>
+              </div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-[#f9fafb] mb-1">
+                {a1.daily_summary}
+              </p>
+              {a1.alert_reason && (
+                <p className="text-xs text-gray-700 dark:text-[#d1d5db]">
+                  <span className="font-bold">Alert Trigger:</span> {a1.alert_reason}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* ROW 0.5 — Live OSINT Map */}
+          {a1?.findings && a1.findings.length > 0 && (
+            <div className="intel-card animate-fade-in-up mb-6 border-0 p-0 overflow-hidden bg-transparent shadow-none">
+              <div className="bg-white dark:bg-[#111827] px-6 py-4 border-b border-gray-200 dark:border-[#1f2937] rounded-t-xl flex justify-between items-center">
+                <h3 className="text-xs font-bold text-gray-600 dark:text-[#9ca3af] uppercase tracking-wider flex items-center gap-2">
+                  <span className="text-[#3b82f6]">🌍</span> Real-Time OSINT Geo-Tracking
+                </h3>
+                <span className="text-[10px] text-[#6b7280] font-mono tracking-widest">{a1.findings.length} EVENTS PLOTTED</span>
+              </div>
+              <LiveOSINTMap findings={a1.findings} />
+            </div>
+          )}
+
           {/* ROW 1 — Threat Gauge + Executive Summary */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Threat Gauge */}
@@ -200,6 +234,16 @@ export default function Dashboard({
               <p className="text-sm text-gray-800 dark:text-[#d1d5db] leading-relaxed mb-4">
                 {brief.executive_summary}
               </p>
+              {brief.market_and_industry_summary && (
+                <div className="bg-gray-50 dark:bg-[#111827] p-3 rounded-lg border border-gray-200 dark:border-[#1f2937] mb-4">
+                  <h4 className="text-[10px] font-bold text-[#f59e0b] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <span>📈</span> Macro-Economic & Market Impact
+                  </h4>
+                  <p className="text-xs text-gray-700 dark:text-[#9ca3af] leading-relaxed">
+                    {brief.market_and_industry_summary}
+                  </p>
+                </div>
+              )}
               <div className="flex items-center gap-4 text-[11px] text-[#6b7280]">
                 <span>Brief ID: <span className="text-gray-600 dark:text-[#9ca3af] font-mono">{brief.brief_id}</span></span>
                 <span>Generated: <span className="text-gray-600 dark:text-[#9ca3af] font-mono">
