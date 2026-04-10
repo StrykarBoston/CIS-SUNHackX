@@ -58,7 +58,8 @@ export default function App() {
     const outputs = {};
 
     try {
-      const ws = new WebSocket('ws://localhost:8000/api/pipeline/stream');
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'ws://localhost:8000';
+      const ws = new WebSocket(`${backendUrl}/api/pipeline/stream`);
       
       ws.onopen = () => {
         ws.send(JSON.stringify({ topic: userInput }));
@@ -100,7 +101,7 @@ export default function App() {
       };
       
       ws.onerror = () => {
-        setError("WebSocket connection failed. Ensure backend is running on port 8000.");
+        setError("WebSocket connection failed. Ensure the backend server is running.");
         clearInterval(timerRef.current);
         setIsLoading(false);
       };

@@ -9,7 +9,7 @@ from typing import Dict, Any
 
 from agents import run_pipeline
 
-load_dotenv()
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'), override=False)
 
 app = FastAPI(title="Conflict Intelligence System API")
 
@@ -65,4 +65,5 @@ async def chat_interaction(request: ChatRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

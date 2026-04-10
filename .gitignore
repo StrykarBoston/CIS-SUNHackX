@@ -23,6 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
+# Python
+__pycache__/
+*.pyc
+.venv/
+backend/__pycache__/
+
 # Security
 .env
 .env.*

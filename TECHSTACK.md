@@ -1,44 +1,32 @@
 # Conflict Intelligence System (CIS) — Tech Stack
 
-This document outlines the core technologies, APIs, architectures, and libraries utilized to build and run the autonomous Conflict Intelligence System and its embedded features.
+This document outlines the core technologies, APIs, and frameworks utilized to power the decentralized Multi-AI Agent Conflict Intelligence System.
 
-## 1. Core Framework & Environment
-* **React 19:** The foundational UI library used to build the single-page application structure.
-* **Vite (`@vitejs/plugin-react`):** Extremely fast build tool and development server used for the React environment.
-* **Node.js:** JavaScript runtime required for Vite and package management.
-* **NPM:** Dependency package manager.
+## 1. Multi-Agent AI Backend (Python)
+The intelligence system operates on a powerful backend utilizing LangChain-style sequential AI architectures.
 
-## 2. Styling & UI/UX
-* **Tailwind CSS (v4.2.2):** Utility-first CSS framework used for all layout, spacing, and responsive design. 
-  * Leverages `@apply` directives seamlessly inside `index.css`.
-  * Integrates full support for both native `light` and `dark` modes utilizing the `.dark` class strategy.
-* **Custom CSS & Animations:** 
-  * Complex keyframes (like `pulse-ring` and `slideUpFade`) embedded either inside functional components via inline style injections or globally in `%src/index.css%` to manage premium glassmorphic gradients.
-* **Lucide SVGs:** Lightweight inline SVG structures for iconography (shield, chat bubbles, alert warnings, etc.).
-
-## 3. Application State & Context Management
-* **React Hooks Matrix:** Heavy reliance on React's functional lifecycle (`useState`, `useEffect`, `useRef`, `useCallback`) inside the primary `App.jsx` router.
-* **Context API (`ThemeContext.jsx`):** Manages the global visual mode toggles (Light/Dark themes) and handles localized `localStorage` preservation.
-
-## 4. Artificial Intelligence & LLM Infrastructure
-The intelligence system operates via a dual-brain architecture utilizing specific frontier LLMs for specialized tasks.
-
+* **FastAPI:** High-performance Python web framework responsible for driving the `main.py` core engine, exposing RESTful methods, and managing real-time data streaming.
+* **WebSockets:** Bypasses standard HTTP request timeouts by establishing an open async loop, streaming live progress from each of the 5 agents directly to the UI.
 * **Groq API Inference Engine:**
-  * **Model:** `llama-3.3-70b-versatile`
-  * **Role:** The core processing brain. It handles the heavy autonomous lifting for the 5-Agent sequential pipeline (OSINT Collector → Conflict Analyst → Scenario Designer → Humanitarian Analyst → Commander Briefs). Runs exceedingly fast, returning highly complex `json_object` configurations securely.
-* **Anthropic API (Claude):**
-  * **Model:** `claude-3-5-sonnet-20241022`
-  * **Role:** The natural language processing engine powering **ARIA** (Autonomous Response & Intelligence Assistant). Serves as an integrated context-aware system chatbot capable of understanding ongoing pipeline memory arrays.
+  * **Model:** `llama-3.1-8b-instant` / `llama-3.3-70b-versatile`
+  * **Role:** Acts as the primary powerhouse resolving the vast arrays of systemic intelligence logic. Handles everything from Geocoding from text strings to full Macro-economic predictions.
+  * *Anthropic API* acts as an intelligent failover/redundant mechanism.
+* **Resend API SDK:** Hooked natively into the Python server to silently dispatch emails regarding the finalized Commander Brief. Used for real-time human alerting.
 
-## 5. OSINT Data Aggregation Tools (`osintTools.js`)
-External APIs connected sequentially into the generation pipeline:
-* **Wikipedia REST API:** Leveraged to dynamically pull geographic, historical, and conflict-oriented contextual baselines corresponding to users' query terms.
-* **Reddit API (Public endpoints):** Harvests the latest "hot" threads dynamically mapped from `r/worldnews` and queries them for real-time sentiment extraction.
+## 2. Frontend Environment (React)
+* **React 19:** Building the responsive single-page application structure.
+* **Vite (`@vitejs/plugin-react`):** Extremely fast build tool and dev server.
+* **React-Leaflet:** The mapping engine that renders OpenStreetMap tiles on the Dashboard, utilizing dynamic geo-coordinate arrays passed back by the AI OSINT collector.
 
-## 6. System Architecture Map
-* **Monolithic SPA** architecture routing exclusively from `App.jsx`.
-* **State Lifter Integration:** The `currentBrief` state tree resides globally and acts as the "payload pipeline," cascading downwards into distinct UI modules (`SimulationLab.jsx`, `Dashboard.jsx`, `AlertCenter.jsx`, `ARIAChatbot.jsx`) after Generation Agents terminate.
+## 3. Styling & User Interface
+* **Tailwind CSS (v4.x):** Utility-first CSS framework managing total layout grids and components natively globally in `%src/index.css%`. Extremely responsive layouts.
+* **Theme System:** Fully operational global Light/Dark modes mapping Tailwind's `.dark` pseudo-classes utilizing dynamic gradient manipulations and CSS variable injection (`ThemeContext.jsx`).
+* **Lucide SVGs:** Lightweight inline SVG structures for intelligence iconography (shield, chat bubbles, alert warnings, etc.).
 
-## 7. Version Control & Management
-* **Git:** Repository version control.
-* **TypeScript Settings:** Basic configuration rules implemented inside `tsconfig.json` mappings for build processing.
+## 4. Analytical Tools & Data Collectors
+* **Wikipedia REST API:** Leveraged to dynamically harvest background intel, geography, and baseline historic context via automated backend scripts (`osint_tools.py`).
+* **Reddit API (Pushshift / Public PRAW equivalents):** Automatically queries global geopolitics subreddits locked explicitly to a strict timestamp interval (`t=day`) to ensure 100% contemporary OSINT extraction. 
+
+## 5. Architectural Paradigms
+* **AI Pipelines:** A chain of specialized LLM instances where the output of Agent *N* directly informs the context array of Agent *N+1* (OSINT → Conflict Detection → Simulation Sandbox → Final Writer).
+* **Decoupled Architecture:** A strictly separate Python Backend holding the AI capabilities and secret keys, exposing solely sanitized intelligence payload events to the React visual client layer.
