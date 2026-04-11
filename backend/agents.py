@@ -7,6 +7,7 @@ from groq import AsyncGroq
 from anthropic import AsyncAnthropic
 
 from osint_tools import gather_osint
+from sentiment_engine import analyze_osint_sentiment
 
 AGENT_PROMPTS = {
     "agent1": {
@@ -84,7 +85,15 @@ Return ONLY a JSON object with this exact structure:
   "reasoning": "2-3 paragraph detailed analysis",
   "recommended_watch_areas": ["area1", "area2"]
 }""",
-        "build_user_message": lambda topic, outputs, _: f"Detect conflict escalation and perform sentiment analysis on these OSINT findings: {json.dumps(outputs.get('agent1', {}))}"
+        "build_user_message": lambda topic, outputs, _: f"""Detect conflict escalation and perform sentiment analysis on these OSINT findings.
+
+OSINT FINDINGS:
+{json.dumps(outputs.get('agent1', {}))}
+
+SENTIMENT ANALYSIS:
+{json.dumps(outputs.get('sentiment_analysis', {}))}
+
+Use both the OSINT findings AND sentiment analysis to provide comprehensive escalation detection and sentiment assessment."""
     },
     "agent3": {
         "name": "Scenario Simulator",
@@ -323,8 +332,25 @@ async def run_pipeline(topic: str, progress_callback: Callable):
             
         elapsed = int(time.time() - start_time)
         outputs[key] = result
+        
         await progress_callback(agent_num, "complete", elapsed, result)
-
+        
+        # Run sentiment analysis after agent1 (OSINT Collector) completes
+        if key == 'agent1':
+            try:
+                print("Running sentiment analysis on OSINT data...")
+                # Wait a moment to ensure result is properly stored
+                await asyncio.sleep(0.1)
+                sentiment_data = await analyze_osint_sentiment({**outputs, "topic": topic})
+                outputs['sentiment_analysis'] = sentiment_data
+                print(f"Sentiment analysis complete: {sentiment_data['overall_sentiment']} (score: {sentiment_data['overall_score']:.3f})")
+                print(f"Sentiment data stored in outputs: {sentiment_data is not None}")
+                # Send sentiment analysis via SSE to frontend
+                await progress_callback(0, "sentiment_complete", 0, sentiment_data)
+            except Exception as e:
+                print(f"Sentiment analysis failed: {e}")
+                outputs['sentiment_analysis'] = None
+        
     full_brief = {
         **outputs,
         "topic": topic,

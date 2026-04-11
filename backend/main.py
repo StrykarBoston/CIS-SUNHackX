@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from typing import Dict, Any
 
 from agents import run_pipeline
+from sentiment_engine import analyze_osint_sentiment
 
 # Load .env for local dev; on Render, env vars are set in the dashboard
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
@@ -61,10 +62,60 @@ async def pipeline_stream(websocket: WebSocket):
     except Exception as e:
         await websocket.send_json({"type": "error", "message": str(e)})
 
+class SentimentRequest(BaseModel):
+    topic: str
+    osint_data: Dict[str, Any] = None
+
 @app.post("/api/chat")
 async def chat_interaction(request: ChatRequest):
     # Route chat requests to Anthropic / Groq
     pass
+
+@app.post("/api/sentiment/analyze")
+async def analyze_sentiment(request: SentimentRequest):
+    """Analyze sentiment of OSINT data"""
+    try:
+        # If no OSINT data provided, run a quick pipeline to get it
+        if not request.osint_data:
+            # Create a simple progress callback that doesn't stream
+            async def dummy_callback(agent_id, status, elapsed=0, result=None):
+                pass
+            
+            osint_result = await run_pipeline(request.topic, dummy_callback)
+        else:
+            osint_result = request.osint_data
+        
+        # Analyze sentiment
+        sentiment_result = await analyze_osint_sentiment(osint_result)
+        
+        return {
+            "success": True,
+            "data": sentiment_result
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+@app.get("/api/sentiment/status")
+async def sentiment_status():
+    """Check sentiment engine status"""
+    try:
+        from sentiment_engine import sentiment_engine
+        return {
+            "status": "active",
+            "models": {
+                "vader": sentiment_engine.vader_analyzer is not None,
+                "textblob": True  # TextBlob is always available if import succeeded
+            },
+            "history_count": len(sentiment_engine.sentiment_history)
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }
 
 if __name__ == "__main__":
     import uvicorn

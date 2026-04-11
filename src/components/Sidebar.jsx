@@ -2,6 +2,7 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { id: 'alerts', label: 'Alert Center', icon: '🚨' },
   { id: 'osint', label: 'OSINT Explorer', icon: '🔍' },
+  { id: 'sentiment', label: 'Sentiment Engine', icon: '💡' },
   { id: 'simulation', label: 'Simulation Lab', icon: '🎮' },
   { id: 'humanitarian', label: 'Civilian Impact', icon: '👥' },
   { id: 'brief', label: 'Commander Brief', icon: '📋' },

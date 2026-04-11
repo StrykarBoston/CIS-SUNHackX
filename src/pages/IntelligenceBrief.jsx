@@ -6,6 +6,7 @@ export default function IntelligenceBrief({ currentBrief, agentOutputs, setActiv
   const a3 = agentOutputs.agent3;
   const a4 = agentOutputs.agent4; // Intelligence Brief Writer
   const a5 = agentOutputs.agent5; // Commander Brief (final output)
+  const sentimentAnalysis = agentOutputs.sentiment_analysis; // Sentiment analysis results
 
   // Use Commander Brief (a5) as primary, fall back to Intelligence Brief Writer (a4)
   const brief = a5 || a4;
@@ -166,9 +167,90 @@ export default function IntelligenceBrief({ currentBrief, agentOutputs, setActiv
           </div>
         </Section>
 
-        {/* 3. KEY INTELLIGENCE FINDINGS */}
+        {/* 3. SENTIMENT ANALYSIS */}
+        {sentimentAnalysis && (
+          <Section number="3" title="SENTIMENT ANALYSIS">
+            <div className="space-y-4">
+              {/* Overall Sentiment */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0a0f1e] rounded-lg border border-gray-200 dark:border-[#1f2937]">
+                <div>
+                  <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-1">Overall Sentiment</p>
+                  <div className="flex items-center gap-3">
+                    <PriorityBadge level={sentimentAnalysis.overall_sentiment} />
+                    <span className="text-sm font-mono text-gray-900 dark:text-[#f9fafb]">
+                      Score: {sentimentAnalysis.overall_score.toFixed(3)}
+                    </span>
+                    <span className="text-xs text-gray-600 dark:text-[#9ca3af]">
+                      Confidence: {Math.round(sentimentAnalysis.confidence * 100)}%
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-[#6b7280]">Analysis Time</p>
+                  <p className="text-xs font-mono text-gray-600 dark:text-[#9ca3af]">
+                    {new Date(sentimentAnalysis.timestamp).toLocaleTimeString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Source-Level Analysis */}
+              <div>
+                <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-3">Source-Level Analysis</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {Object.entries(sentimentAnalysis.source_analysis).map(([key, analysis]) => (
+                    <div key={key} className="p-3 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1f2937] rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-gray-900 dark:text-[#f9fafb]">{analysis.source}</span>
+                        <PriorityBadge level={analysis.sentiment} />
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-[#9ca3af] mb-2 line-clamp-2">{analysis.text}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">Confidence: {Math.round(analysis.confidence * 100)}%</span>
+                        <span className="text-xs font-mono text-gray-600 dark:text-[#9ca3af]">
+                          {analysis.scores.modified?.toFixed(3) || 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Key Insights */}
+              {sentimentAnalysis.key_insights && sentimentAnalysis.key_insights.length > 0 && (
+                <div>
+                  <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-2">Key Insights</p>
+                  <ul className="space-y-2">
+                    {sentimentAnalysis.key_insights.map((insight, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-gray-700 dark:text-[#d1d5db]">
+                        <span className="text-[#3b82f6] mt-0.5">•</span>
+                        {insight}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Recommendations */}
+              {sentimentAnalysis.recommendations && sentimentAnalysis.recommendations.length > 0 && (
+                <div>
+                  <p className="text-xs text-[#6b7280] uppercase tracking-wider mb-2">Sentiment-Based Recommendations</p>
+                  <ul className="space-y-2">
+                    {sentimentAnalysis.recommendations.map((rec, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-gray-700 dark:text-[#d1d5db]">
+                        <span className="text-[#10b981] mt-0.5">→</span>
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </Section>
+        )}
+
+        {/* 4. KEY INTELLIGENCE FINDINGS */}
         {brief.key_findings && (
-          <Section number="3" title="KEY INTELLIGENCE FINDINGS">
+          <Section number="4" title="KEY INTELLIGENCE FINDINGS">
             <ol className="space-y-4">
               {brief.key_findings.map((f, i) => (
                 <li key={i} className="flex gap-3">

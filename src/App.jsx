@@ -7,6 +7,7 @@ import OsintExplorer from './pages/OsintExplorer';
 import SimulationLab from './pages/SimulationLab';
 import HumanitarianImpact from './pages/HumanitarianImpact';
 import IntelligenceBrief from './pages/IntelligenceBrief';
+import SentimentEngine from './pages/SentimentEngine';
 import Settings from './pages/Settings';
 
 const INITIAL_AGENT_STATUSES = [
@@ -24,6 +25,7 @@ export default function App() {
   const [agentStatuses, setAgentStatuses] = useState(INITIAL_AGENT_STATUSES);
   const [agentOutputs, setAgentOutputs] = useState({
     agent1: null, agent2: null, agent3: null, agent4: null, agent5: null,
+    sentiment_analysis: null,
   });
   const [currentBrief, setCurrentBrief] = useState(null);
   const [briefHistory, setBriefHistory] = useState([]);
@@ -48,7 +50,7 @@ export default function App() {
     setTotalSeconds(null);
     setElapsedSeconds(0);
     setAgentStatuses(INITIAL_AGENT_STATUSES);
-    setAgentOutputs({ agent1: null, agent2: null, agent3: null, agent4: null, agent5: null });
+    setAgentOutputs({ agent1: null, agent2: null, agent3: null, agent4: null, agent5: null, sentiment_analysis: null });
 
     const startTime = Date.now();
     timerRef.current = setInterval(() => {
@@ -69,10 +71,16 @@ export default function App() {
         const data = JSON.parse(event.data);
         
         if (data.type === 'progress') {
-          updateAgentStatus(data.agent_id, data.status, data.elapsed);
-          if (data.result) {
-            setAgentOutputs(prev => ({ ...prev, [`agent${data.agent_id}`]: data.result }));
-            outputs[`agent${data.agent_id}`] = data.result;
+          // Handle sentiment_complete event (agent_id = 0)
+          if (data.status === 'sentiment_complete' && data.result) {
+            setAgentOutputs(prev => ({ ...prev, sentiment_analysis: data.result }));
+            outputs['sentiment_analysis'] = data.result;
+          } else {
+            updateAgentStatus(data.agent_id, data.status, data.elapsed);
+            if (data.result) {
+              setAgentOutputs(prev => ({ ...prev, [`agent${data.agent_id}`]: data.result }));
+              outputs[`agent${data.agent_id}`] = data.result;
+            }
           }
         } 
         else if (data.type === 'complete') {
@@ -129,6 +137,7 @@ export default function App() {
       agent3: brief.agent3,
       agent4: brief.agent4,
       agent5: brief.agent5,
+      sentiment_analysis: brief.sentiment_analysis,
     });
     setActivePage('brief');
   }, []);
@@ -158,6 +167,7 @@ export default function App() {
       case 'simulation': return <SimulationLab {...pageProps} />;
       case 'humanitarian': return <HumanitarianImpact {...pageProps} />;
       case 'brief': return <IntelligenceBrief {...pageProps} />;
+      case 'sentiment': return <SentimentEngine currentBrief={currentBrief} agentOutputs={agentOutputs} setActivePage={setActivePage} />;
       case 'settings': return <Settings />;
       default: return <Dashboard {...pageProps} />;
     }
