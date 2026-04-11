@@ -12,8 +12,17 @@ from sentiment_engine import analyze_osint_sentiment
 
 # Load .env for local dev; on Render, env vars are set in the dashboard
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+print(f"Looking for .env at: {env_path}")
+print(f".env exists: {os.path.exists(env_path)}")
 if os.path.exists(env_path):
-    load_dotenv(dotenv_path=env_path, override=False)
+    load_dotenv(dotenv_path=env_path, override=True)
+    print(f".env loaded successfully")
+    
+# Debug: Check if RESEND_API_KEY is loaded
+resend_key = os.getenv("RESEND_API_KEY")
+print(f"RESEND_API_KEY found: {bool(resend_key)}")
+if resend_key:
+    print(f"RESEND_API_KEY starts with: {resend_key[:10]}...")
 
 app = FastAPI(title="Conflict Intelligence System API")
 

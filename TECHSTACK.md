@@ -25,8 +25,15 @@ The intelligence system operates on a powerful backend utilizing LangChain-style
 
 ## 4. Analytical Tools & Data Collectors
 * **Wikipedia REST API:** Leveraged to dynamically harvest background intel, geography, and baseline historic context via automated backend scripts (`osint_tools.py`).
-* **Reddit API (Pushshift / Public PRAW equivalents):** Automatically queries global geopolitics subreddits locked explicitly to a strict timestamp interval (`t=day`) to ensure 100% contemporary OSINT extraction. 
+* **Reddit API (Pushshift / Public PRAW equivalents):** Automatically queries global geopolitics subreddits locked explicitly to a strict timestamp interval (`t=day`) to ensure 100% contemporary OSINT extraction.
 
-## 5. Architectural Paradigms
+## 5. Sentiment Analysis Engine
+* **VADER Sentiment Analysis:** Lightweight, lexicon-based sentiment analyzer optimized for social media and conflict-related text. Provides compound sentiment scores ranging from -1 (very negative) to +1 (very positive).
+* **TextBlob NLP Library:** Complementary sentiment analysis providing polarity and subjectivity scores. Combined with VADER for improved accuracy.
+* **Conflict Keyword Modifiers:** Custom sentiment modifiers for conflict-specific terminology (war, casualties, ceasefire, humanitarian aid, etc.) that adjust sentiment scores based on severity.
+* **Multi-Source Analysis:** Analyzes sentiment across all OSINT sources including news headlines, summaries, daily briefs, and agent reasoning outputs.
+* **Real-Time SSE Streaming:** Sentiment analysis results are streamed to the frontend via Server-Sent Events immediately after OSINT collection completes. 
+
+## 6. Architectural Paradigms
 * **AI Pipelines:** A chain of specialized LLM instances where the output of Agent *N* directly informs the context array of Agent *N+1* (OSINT → Conflict Detection → Simulation Sandbox → Final Writer).
 * **Decoupled Architecture:** A strictly separate Python Backend holding the AI capabilities and secret keys, exposing solely sanitized intelligence payload events to the React visual client layer.
